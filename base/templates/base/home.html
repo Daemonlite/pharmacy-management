@@ -1,0 +1,53 @@
+{% extends 'base/main.html' %}
+
+{% block content %}
+  {% load static tailwind_tags %}
+  {% tailwind_css %}
+
+  <div class="container mx-auto mt-12">
+    <form method="get" action="{% url 'home' %}">
+      <div class="mb-4">
+        <input type="text" name="search" placeholder="Search drug" class="py-2 px-4 border border-gray-300 w-64" style="width: 300px;">
+        <button type="submit" class="py-2 px-4 bg-blue-500 text-white ml-2">Search</button>
+      </div>
+    </form>
+    <br>
+    <table class="min-w-full bg-white border border-gray-300 divide-y divide-gray-300">
+      <thead>
+        <tr>
+          <th class="py-2 px-4 border-b">Name</th>
+          <th class="py-2 px-4 border-b">Price</th>
+          <th class="py-2 px-4 border-b">Description</th>
+          <th class="py-2 px-4 border-b">Manufacturer</th>
+          <th class="py-2 px-4 border-b">Supplier Info</th>
+          <th class="py-2 px-4 border-b">Expiry Date</th>
+          <th class="py-2 px-4 border-b">Actions</th> <!-- New column for actions -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for drug in drugs %}
+          <tr>
+            <td class="py-2 px-4 border-b">{{ drug.name }}</td>
+            <td class="py-2 px-4 border-b">{{ drug.price }}</td>
+            <td class="py-2 px-4 border-b">{{ drug.description }}</td>
+            <td class="py-2 px-4 border-b">{{ drug.manufacturer }}</td>
+            <td class="py-2 px-4 border-b">{{ drug.supplier_info }}</td>
+            <td class="py-2 px-4 border-b">{{ drug.expiry_date|date:"F j, Y" }}</td>
+            <td class="py-2 px-4 border-b">
+              <div class="flex space-x-2">
+                <form method="POST" action="{% url 'remove_drug' drug.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="py-2 px-4 bg-orange-500 text-white">Delete</button>
+                </form>
+                <a href="{% url 'edit_drug' drug.id %}" class="py-2 px-4 bg-blue-500 text-white">Update</a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock content %}
+
+
